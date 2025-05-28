@@ -1,0 +1,12 @@
+.topbar {
+  background: #111;
+  color: #fff;
+  padding: 6px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+.topbar a { color: #fff; text-decoration: underline; }
+.topbar-center { flex: 1; display: flex; justify-content: center; }
+.topbar-right { display: flex; align-items: center; }
