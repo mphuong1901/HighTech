@@ -13,6 +13,10 @@
     "@fortawesome/free-brands-svg-icons": "^6.7.2",
     "@fortawesome/free-regular-svg-icons": "^6.7.2",
     "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@formspree/react": "^3.0.0",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "antd": "^5.25.1",
+    "prop-types": "^15.8.1",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router-dom": "^7.6.0"
@@ -29,3 +33,4 @@
     "vite": "^6.3.5"
   }
 }
+
