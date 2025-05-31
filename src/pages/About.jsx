@@ -7,26 +7,7 @@ const { Title, Paragraph, Text } = Typography;
 
 function About() {
   // Team information - can be updated with actual information
-  const teamMembers = [
-    {
-      name: 'John Smith',
-      position: 'CEO & Founder',
-      avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-      description: 'Founder with over 10 years of experience in technology.',
-    },
-    {
-      name: 'Sarah Johnson',
-      position: 'CTO',
-      avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-      description: 'Technology expert with extensive knowledge in software development.',
-    },
-    {
-      name: 'Michael Lee',
-      position: 'Marketing Director',
-      avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-      description: 'Marketing specialist with many successful campaigns.',
-    },
-  ];
+
 
   return (
     <div>

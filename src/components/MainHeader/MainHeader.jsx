@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Menu, Input, Badge, Drawer, List, Avatar, Button } from "antd";
 import { SearchOutlined, ShoppingCartOutlined, HeartOutlined, UserOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../CartContext";
 import { useWishlist } from "../WishlistContext";
 import './MainHeader.css';
@@ -12,16 +12,43 @@ function MainHeader() {
   const { wishlistItems, wishlistCount, removeFromWishlist, addToCart } = useWishlist();
   const { addToCart: addProductToCart } = useCart();
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchValue, setSearchValue] = useState('');
   const [isWishlistVisible, setIsWishlistVisible] = useState(false);
+  const [selectedKey, setSelectedKey] = useState('1');
+  
+  useEffect(() => {
+    // Set the selected key based on the current path
+    const path = location.pathname;
+    if (path.includes('/home')) {
+      setSelectedKey('1');
+    } else if (path.includes('/contact')) {
+      setSelectedKey('2');
+    } else if (path.includes('/about')) {
+      setSelectedKey('3');
+    }
+    
+    // Lấy query từ URL nếu đang ở trang search
+    if (path.includes('/search')) {
+      const params = new URLSearchParams(location.search);
+      const query = params.get('q') || '';
+      setSearchValue(query);
+    }
+  }, [location]);
   
   return (
     <div className="main-header">
       <div className="logo" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }}>HighTech</div>
-      <Menu mode="horizontal" defaultSelectedKeys={['1']} className="main-menu">
-        <Menu.Item key="1" onClick={() => navigate('/home')}>Home</Menu.Item>
-        <Menu.Item key="2" onClick={() => navigate('/contact')}>Contact</Menu.Item>
-        <Menu.Item key="3" onClick={() => navigate('/about')}>About</Menu.Item>
+      <Menu mode="horizontal" selectedKeys={[selectedKey]} className="main-menu">
+        <Menu.Item key="1">
+          <Link to="/home">Home</Link>
+        </Menu.Item>
+        <Menu.Item key="2">
+          <Link to="/contact">Contact</Link>
+        </Menu.Item>
+        <Menu.Item key="3">
+          <Link to="/about">About</Link>
+        </Menu.Item>
 
       </Menu>
       <div className="header-actions">
@@ -46,7 +73,7 @@ function MainHeader() {
         <UserMenu />
         
         <Drawer 
-          title="Danh sách yêu thích" 
+          title="Wishlist" 
           placement="right" 
           onClose={() => setIsWishlistVisible(false)} 
           open={isWishlistVisible}
@@ -82,7 +109,7 @@ function MainHeader() {
             />
           ) : (
             <div style={{ textAlign: 'center', padding: '20px' }}>
-              <p>Danh sách yêu thích trống</p>
+              <p>Wishlist is empty</p>
             </div>
           )}
         </Drawer>

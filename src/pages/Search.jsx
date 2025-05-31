@@ -48,9 +48,10 @@ function Search() {
         ...smartphones
       ];
 
-      // Tìm kiếm theo tên sản phẩm (không phân biệt hoa thường)
+      // Tìm kiếm theo tên sản phẩm hoặc brand (không phân biệt hoa thường)
       const results = allProducts.filter(product => 
-        product.name.toLowerCase().includes(query.toLowerCase())
+        product.name.toLowerCase().includes(query.toLowerCase()) || 
+        product.brand.toLowerCase().includes(query.toLowerCase())
       );
 
       setSearchResults(results);
@@ -72,10 +73,13 @@ function Search() {
       <Layout>
         <Content style={{ padding: '32px 32px 0 32px', background: '#fafafa' }}>
           <div style={{ marginBottom: 24 }}>
-            <Title level={3}>Kết quả tìm kiếm cho: "{searchQuery}"</Title>
+            <Title level={3}>
+              Kết quả tìm kiếm cho: 
+              {searchQuery && `"${searchQuery}"`}
+            </Title>
             <Input
               size="large"
-              placeholder="Tìm kiếm sản phẩm..."
+              placeholder="Tìm kiếm sản phẩm hoặc thương hiệu..."
               prefix={<SearchOutlined />}
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}

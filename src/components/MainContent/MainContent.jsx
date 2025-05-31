@@ -2,6 +2,7 @@ import React from 'react';
 import { Row, Col, Layout, Menu } from 'antd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMobileScreen, faLaptop, faHeadphones, faClock } from '@fortawesome/free-solid-svg-icons';
+import bannerSlider from '../../Image/bannerslider.jpg';
 import './MainContent.css';
 
 const { Content, Sider } = Layout;
@@ -23,26 +24,19 @@ function MainContent({ bannerData }) {
       
       <Content>
         <div className="banner-card">
-          <Row align="middle">
-            <Col xs={24} md={12}>
-              <div className="banner-content">
-                <div className="banner-text">
-                  <h2>{bannerData.title}</h2>
-                  <h3>{bannerData.subtitle}</h3>
-                  <button className="shop-now-btn">
-                    Shop Now
-                  </button>
-                </div>
+          <div className="banner-container">
+            <img
+              src={bannerSlider}
+              alt="Banner"
+              className="banner-img"
+            />
+            <div className="banner-content">
+              <div className="banner-text">
+                <h2>{bannerData?.title}</h2>
+                <h3>{bannerData?.subtitle}</h3>
               </div>
-            </Col>
-            <Col xs={24} md={12} className="banner-image-col">
-              <img
-                src={bannerData.image}
-                alt="Banner"
-                className="banner-img"
-              />
-            </Col>
-          </Row>
+            </div>
+          </div>
         </div>
       </Content>
     </Layout>

@@ -1,0 +1,95 @@
+.contact-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.page-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #000000;
+}
+
+.contact-card {
+  height: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.contact-card .ant-card-head {
+  background-color: #ffffff;
+  border-bottom: 2px solid #ffcccb;
+}
+
+.contact-card .ant-card-head-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Form styles */
+form label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.ant-input, .ant-input-textarea {
+  margin-bottom: 8px;
+}
+
+/* Contact info styles */
+.contact-info-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.contact-icon {
+  font-size: 24px;
+  margin-right: 16px;
+  color: #000000;
+  padding: 10px;
+  background-color: rgba(255, 204, 203, 0.5);
+  border-radius: 50%;
+}
+
+.contact-map {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Success message styles */
+.contact-success {
+  max-width: 600px;
+  margin: 100px auto;
+  text-align: center;
+}
+
+.contact-success .ant-card {
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.contact-success h3 {
+  color: #000000;
+  margin-bottom: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .contact-container {
+    padding: 20px 10px;
+  }
+  
+  .contact-card {
+    margin-bottom: 20px;
+  }
+}

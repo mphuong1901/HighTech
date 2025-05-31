@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Button, message } from 'antd';
-import { LeftOutlined, RightOutlined, ShoppingCartOutlined, HeartOutlined, HeartFilled } from '@ant-design/icons';
+import { Button, Modal } from 'antd';
+import { LeftOutlined, RightOutlined, ShoppingCartOutlined, HeartOutlined, HeartFilled, EyeOutlined } from '@ant-design/icons';
+import ProductDetailModal from '../ProductList/ProductDetailModal';
 import { useCart } from '../CartContext';
 import { useWishlist } from '../WishlistContext';
 import { smartphones, laptops, headphones, smartwatches } from '../../DATA/data';
@@ -10,6 +11,7 @@ function FlashSales({ endTime }) {
   const { addToCart } = useCart();
   const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   
   // Hàm lấy sản phẩm ngẫu nhiên từ tất cả danh mục
   const getRandomProducts = () => {
@@ -48,18 +50,47 @@ function FlashSales({ endTime }) {
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = (product) => {
     addToCart(product);
-    message.success(`Đã thêm ${product.name} vào giỏ hàng`);
+    Modal.success({
+      title: 'Added to cart',
+      content: `${product.name} has been added to your cart.`,
+      centered: true,
+      okButtonProps: {
+        style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+      },
+      maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+      bodyStyle: { color: '#000' }
+    });
   };
   
   // Xử lý thêm/xóa khỏi danh sách yêu thích
   const handleToggleWishlist = (e, product) => {
-    e.stopPropagation();
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
     if (isInWishlist(product.id)) {
       removeFromWishlist(product.id);
-      message.success(`Đã xóa ${product.name} khỏi danh sách yêu thích`);
+      Modal.info({
+        title: 'Removed from wishlist',
+        content: `${product.name} has been removed from your wishlist.`,
+        centered: true,
+        okButtonProps: {
+          style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+        },
+        maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+        bodyStyle: { color: '#000' }
+      });
     } else {
       addToWishlist(product);
-      message.success(`Đã thêm ${product.name} vào danh sách yêu thích`);
+      Modal.success({
+        title: 'Added to wishlist',
+        content: `${product.name} has been added to your wishlist.`,
+        centered: true,
+        okButtonProps: {
+          style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+        },
+        maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+        bodyStyle: { color: '#000' }
+      });
     }
   };
   
@@ -162,7 +193,7 @@ function FlashSales({ endTime }) {
 
       <div className="flash-sales-products">
         {flashSaleProducts.slice(currentIndex, currentIndex + 4).map((product) => (
-          <div className="product-card" key={product.id}>
+          <div style={{width: '300px'}} className="product-card" key={product.id} onClick={() => setSelectedProduct(product)}>
             <div className="product-image-container">
               <div className="discount-badge">-{product.discount}%</div>
               <div className="action-buttons">
@@ -170,14 +201,29 @@ function FlashSales({ endTime }) {
                   shape="circle" 
                   icon={isInWishlist(product.id) ? <HeartFilled style={{ color: '#DB4444' }} /> : <HeartOutlined />} 
                   className="action-button" 
-                  onClick={(e) => handleToggleWishlist(e, product)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleToggleWishlist(e, product);
+                  }}
+                />
+                <Button
+                  shape="circle"
+                  icon={<EyeOutlined />}
+                  className="action-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedProduct(product);
+                  }}
                 />
               </div>
-              <img src={product.image} alt={product.name} className="product-image" />
+              <img src={product.image} alt={product.name} className="product-image" style={{cursor: 'pointer'}} />
               <Button 
                 className="add-to-cart-btn" 
                 icon={<ShoppingCartOutlined />}
-                onClick={() => handleAddToCart(product)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAddToCart(product);
+                }}
               >
                 Add to cart
               </Button>
@@ -201,6 +247,21 @@ function FlashSales({ endTime }) {
         ))}
       </div>
 
+      {selectedProduct && (
+        <ProductDetailModal
+          open={!!selectedProduct}
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onFavorite={(productId) => {
+            handleToggleWishlist(null, selectedProduct);
+          }}
+          isFavorite={isInWishlist(selectedProduct.id)}
+          onAddToCart={(product) => {
+            handleAddToCart(product);
+            setSelectedProduct(null);
+          }}
+        />
+      )}
     </div>
   );
 }

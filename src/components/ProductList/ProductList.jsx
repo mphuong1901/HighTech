@@ -2,8 +2,10 @@ import React, { useState } from "react";
 import PropTypes from 'prop-types';
 import { Card, Row, Col, Typography, Button, Rate, Modal, message } from "antd";
 import { HeartOutlined, HeartFilled, EyeOutlined, ShoppingCartOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { useCart } from '../CartContext';
 import { useWishlist } from '../WishlistContext';
+import ProductDetailModal from './ProductDetailModal';
 import './ProductList.css';
 import { laptops, headphones, smartwatches, smartphones } from '../../DATA/data';
 
@@ -21,7 +23,6 @@ function ProductList({ title, category = 'laptops', viewAll = false, onViewAll }
   const handleAddToCart = (e, product) => {
     e.stopPropagation();
     addToCart(product);
-    message.success(`Added ${product.name} to cart`);
   };
 
   const getProductData = (category) => {
@@ -35,13 +36,33 @@ function ProductList({ title, category = 'laptops', viewAll = false, onViewAll }
   };
 
   const toggleFavorite = (e, product) => {
-    e.stopPropagation();
+    if (e && e.stopPropagation) {
+      e.stopPropagation();
+    }
     if (isInWishlist(product.id)) {
       removeFromWishlist(product.id);
-      message.success(`Removed ${product.name} from wishlist`);
+      Modal.info({
+        title: 'Removed from wishlist',
+        content: `${product.name} has been removed from your wishlist.`,
+        centered: true,
+        okButtonProps: {
+          style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+        },
+        maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+        bodyStyle: { color: '#000' }
+      });
     } else {
       addToWishlist(product);
-      message.success(`Added ${product.name} to wishlist`);
+      Modal.success({
+        title: 'Added to wishlist',
+        content: `${product.name} has been added to your wishlist.`,
+        centered: true,
+        okButtonProps: {
+          style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+        },
+        maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+        bodyStyle: { color: '#000' }
+      });
     }
   };
 
@@ -94,7 +115,19 @@ function ProductList({ title, category = 'laptops', viewAll = false, onViewAll }
                       type="primary"
                       icon={<ShoppingCartOutlined />}
                       className="add-to-cart-button"
-                      onClick={(e) => handleAddToCart(e, product)}
+                      onClick={(e) => {
+                        handleAddToCart(e, product)
+                        Modal.success({
+                          title: 'Added to cart',
+                          content: `${product.name} has been added to your cart.`,
+                          centered: true,
+                          okButtonProps: {
+                            style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+                          },
+                          maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+                          bodyStyle: { color: '#000' }
+                        });
+                      }}
                     >
                       Add to cart
                     </Button>
@@ -182,7 +215,19 @@ function ProductList({ title, category = 'laptops', viewAll = false, onViewAll }
                               type="primary"
                               icon={<ShoppingCartOutlined />}
                               className="add-to-cart-button"
-                              onClick={e => handleAddToCart(e, product)}
+                              onClick={e => {
+                                handleAddToCart(e, product)
+                                Modal.success({
+                                  title: 'Added to cart',
+                                  content: `${product.name} has been added to your cart.`,
+                                  centered: true,
+                                  okButtonProps: {
+                                    style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+                                  },
+                                  maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+                                  bodyStyle: { color: '#000' }
+                                });
+                              }}
                             >
                               Add to cart
                             </Button>
@@ -211,61 +256,31 @@ function ProductList({ title, category = 'laptops', viewAll = false, onViewAll }
         </div>
       )}
       {/* Modal hiển thị chi tiết sản phẩm */}
-      <Modal
-        visible={!!selectedProduct}
-        title={selectedProduct ? <span style={{fontWeight:700, fontSize:26, color:'#ff3e7f', fontFamily:'Montserrat, Arial, sans-serif', letterSpacing:1}}>{selectedProduct.name}</span> : ''}
-        onCancel={() => setSelectedProduct(null)}
-        footer={null}
-        centered
-        styles={{
-          body: {
-            background: 'linear-gradient(135deg, #f8e1ff 0%, #ffe6e6 100%)',
-            borderRadius: 24,
-            padding: 32,
-            boxShadow: '0 8px 32px rgba(255,62,127,0.12)',
-            minHeight: 340
-          }
-        }}
-        style={{borderRadius: 28, overflow: 'hidden'}}
-      >
-        {selectedProduct && (
-          <div style={{display:'flex',alignItems:'center',gap:32,justifyContent:'center',flexWrap:'wrap'}}>
-            <img src={selectedProduct.image} alt={selectedProduct.name} style={{maxWidth:'220px',borderRadius:18,boxShadow:'0 4px 16px #ffb6d5',marginBottom:16}} />
-            <div style={{textAlign:'left',maxWidth:340}}>
-              <div style={{marginBottom:12}}>
-                <span style={{fontWeight:700,fontSize:22,color:'#ff3e7f',fontFamily:'Montserrat, Arial, sans-serif'}}>${selectedProduct.price}</span>
-                {selectedProduct.originalPrice && (
-                  <span style={{marginLeft:12,textDecoration:'line-through',color:'#bdbdbd',fontSize:16}}>${selectedProduct.originalPrice}</span>
-                )}
-              </div>
-              <div style={{marginBottom:12}}>
-                <Rate disabled defaultValue={selectedProduct.rating} style={{color:'#ff3e7f'}} />
-                <span style={{color:'#888',marginLeft:8}}>({selectedProduct.reviews} đánh giá)</span>
-              </div>
-              <div style={{marginBottom:18}}>
-                <span style={{fontSize:16,color:'#333',fontFamily:'Montserrat, Arial, sans-serif'}}>{selectedProduct.description ? selectedProduct.description : ''}</span>
-                {selectedProduct.specs && (
-                  <div style={{marginTop:12, background:'#fff6fa', borderRadius:10, padding:'12px 18px', boxShadow:'0 2px 8px #ffd6e6', fontSize:15, color:'#5a5a5a'}}>
-                    <div style={{fontWeight:600, color:'#ff3e7f', marginBottom:6}}>Specification:</div>
-                    <ul style={{margin:0, paddingLeft:18}}>
-                      {Object.entries(selectedProduct.specs).map(([key, value]) => (
-                        <li key={key}><span style={{fontWeight:500}}>{key.charAt(0).toUpperCase() + key.slice(1)}:</span> {value}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-              <div style={{display:'flex',gap:12}}>
-                <Button type="primary" icon={<ShoppingCartOutlined />} style={{background:'linear-gradient(90deg,#ff3e7f,#ffb86c)',border:'none',fontWeight:600,fontSize:16,borderRadius:12,padding:'0 24px'}} onClick={()=>{
-                  addToCart(selectedProduct);
-                  message.success(`Đã thêm ${selectedProduct.name} vào giỏ hàng`);
-                }}>Thêm vào giỏ</Button>
-                <Button icon={<HeartOutlined />} style={{color:'#ff3e7f',border:'1.5px solid #ff3e7f',fontWeight:600,fontSize:16,borderRadius:12,padding:'0 20px',background:'#fff'}} onClick={()=>{/* handle add to wishlist */}}>Add to wishlist</Button>
-              </div>
-            </div>
-          </div>
-        )}
-      </Modal>
+      {selectedProduct && (
+        <ProductDetailModal
+          open={!!selectedProduct}
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onFavorite={(productId) => {
+            toggleFavorite(null, selectedProduct);
+          }}
+          isFavorite={isInWishlist(selectedProduct.id)}
+          onAddToCart={(productToAdd) => {
+            addToCart(productToAdd);
+            setSelectedProduct(null);
+            Modal.success({
+              title: 'Added to cart',
+              content: `${productToAdd.name} has been added to your cart.`,
+              centered: true,
+              okButtonProps: {
+                style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+              },
+              maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+              bodyStyle: { color: '#000' }
+            });
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -284,17 +299,46 @@ const ProductCard = ({ product }) => {
   const handleAddToCart = (e, product) => {
     e.stopPropagation();
     addToCart(product);
-    message.success(`Added ${product.name} to cart`);
+    Modal.success({
+      title: 'Added to cart',
+      content: `${product.name} has been added to your cart.`,
+      centered: true,
+      okButtonProps: {
+        style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+      },
+      maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+      bodyStyle: { color: '#000' }
+    });
   };
 
   const toggleFavorite = (e, product) => {
     e.stopPropagation();
-    if (isInWishlist(product.id)) {
+    const isCurrentlyInWishlist = isInWishlist(product.id);
+    
+    if (isCurrentlyInWishlist) {
       removeFromWishlist(product.id);
-      message.success(`Removed ${product.name} from wishlist`);
+      Modal.info({
+        title: 'Removed from wishlist',
+        content: `${product.name} has been removed from your wishlist.`,
+        centered: true,
+        okButtonProps: {
+          style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+        },
+        maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+        bodyStyle: { color: '#000' }
+      });
     } else {
       addToWishlist(product);
-      message.success(`Added ${product.name} to wishlist`);
+      Modal.success({
+        title: 'Added to wishlist',
+        content: `${product.name} has been added to your wishlist.`,
+        centered: true,
+        okButtonProps: {
+          style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+        },
+        maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+        bodyStyle: { color: '#000' }
+      });
     }
   };
 
@@ -317,7 +361,7 @@ const ProductCard = ({ product }) => {
               type="text"
               icon={isInWishlist(product.id) ? <HeartFilled style={{ color: '#DB4444' }} /> : <HeartOutlined />}
               className={`action-button ${isInWishlist(product.id) ? 'active' : ''}`}
-              onClick={e => toggleFavorite(e, product)}
+              onClick={e => { e.stopPropagation(); toggleFavorite(e, product)}}
             />
             <Button
               type="text"
@@ -330,7 +374,20 @@ const ProductCard = ({ product }) => {
             type="primary"
             icon={<ShoppingCartOutlined />}
             className="add-to-cart-button"
-            onClick={(e) => handleAddToCart(e, product)}
+            onClick={(e) =>{
+              e.stopPropagation();
+              handleAddToCart(e, product);
+              Modal.success({
+                title: 'Added to cart',
+                content: `${product.name} has been added to your cart.`,
+                centered: true,
+                okButtonProps: {
+                  style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+                },
+                maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+                bodyStyle: { color: '#000' }
+              });
+            }}
           >
             Add to cart
           </Button>
@@ -338,76 +395,42 @@ const ProductCard = ({ product }) => {
       }
     >
       <div className="product-info">
-        <Title level={5} className="product-name">{product.name}</Title>
+        <Title level={4} style={{ color: '#DB4444', fontWeight: 'bold', marginBottom: 4, }}>{product.name}</Title>
         <div className="product-price">
-          <Text type="danger" strong>${product.price}</Text>
+          <Text style={{ color: '#DB4444', fontSize: 18, fontWeight: 'bold' }}>${product.price}</Text>
           {product.originalPrice && (
-            <Text delete className="original-price">${product.originalPrice}</Text>
+            <Text delete style={{ marginLeft: 8, color: '#999' }}>${product.originalPrice}</Text>
           )}
         </div>
         <div className="product-rating">
-          <Rate disabled defaultValue={product.rating} />
+          <Rate disabled defaultValue={product.rating} style={{ fontSize: 14 }} />
           <Text type="secondary">({product.reviews})</Text>
         </div>
-      </div>
-
+      </div>    
       {selectedProduct && (
-        <Modal
-          title={selectedProduct.name}
+        <ProductDetailModal
           open={!!selectedProduct}
-          onCancel={() => setSelectedProduct(null)}
-          footer={[
-            <Button key="close" onClick={() => setSelectedProduct(null)}>
-              Đóng
-            </Button>,
-            <Button 
-              key="add" 
-              type="primary" 
-              icon={<ShoppingCartOutlined />}
-              onClick={() => {
-                addToCart(selectedProduct);
-                message.success(`Đã thêm ${selectedProduct.name} vào giỏ hàng`);
-                setSelectedProduct(null);
-              }}
-            >
-              Thêm vào giỏ
-            </Button>
-          ]}
-          width={700}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <img 
-                src={selectedProduct.image} 
-                alt={selectedProduct.name} 
-                style={{ width: '100%', height: 'auto' }} 
-              />
-            </Col>
-            <Col span={12}>
-              <div style={{ marginBottom: 16 }}>
-                <Title level={4}>{selectedProduct.name}</Title>
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
-                  <Rate disabled defaultValue={selectedProduct.rating} style={{ fontSize: 14 }} />
-                  <Text type="secondary" style={{ marginLeft: 8 }}>({selectedProduct.reviews} đánh giá)</Text>
-                </div>
-                <div style={{ marginBottom: 16 }}>
-                  <Text type="danger" style={{ fontSize: 24, fontWeight: 'bold' }}>
-                    ${selectedProduct.price}
-                  </Text>
-                  {selectedProduct.originalPrice && (
-                    <Text delete style={{ marginLeft: 8 }}>
-                      ${selectedProduct.originalPrice}
-                    </Text>
-                  )}
-                </div>
-                <div>
-                  <Text>Mô tả sản phẩm:</Text>
-                  <p>{selectedProduct.description || 'Sản phẩm công nghệ cao cấp với nhiều tính năng hiện đại.'}</p>
-                </div>
-              </div>
-            </Col>
-          </Row>
-        </Modal>
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+          onFavorite={(productId) => {
+            toggleFavorite(null, selectedProduct);
+          }}
+          isFavorite={isInWishlist(selectedProduct.id)}
+          onAddToCart={(productToAdd) => {
+            addToCart(productToAdd);
+            setSelectedProduct(null);
+            Modal.success({
+              title: 'Added to cart',
+              content: `${productToAdd.name} has been added to your cart.`,
+              centered: true,
+              okButtonProps: {
+                style: { backgroundColor: '#DB4444', borderColor: '#DB4444', color: '#fff' },
+              },
+              maskStyle: { backgroundColor: 'rgba(0, 0, 0, 0.45)' },
+              bodyStyle: { color: '#000' }
+            });
+          }}
+        />
       )}
     </Card>
   );

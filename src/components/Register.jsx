@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
 import { useNavigate, Link } from "react-router-dom";
+import backgroundLogin from "../Image/BackgroundLogin.png";
 
 function Register() {
   const [loading, setLoading] = useState(false);
@@ -34,9 +35,24 @@ function Register() {
   };
 
   return (
-    <div style={{ maxWidth: 400, margin: "40px auto", padding: 32, background: "#fff", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
-      <h2 style={{ textAlign: "center", marginBottom: 24 }}>Register an account</h2>
-      <Form layout="vertical" onFinish={onFinish}>
+    <div style={{
+      height: "100vh",
+      display: "flex",
+      alignItems: "center",
+      backgroundImage: `url(${backgroundLogin})`,
+      backgroundSize: "cover",
+      backgroundPosition: "center",
+    }}>
+      <div style={{ 
+        maxWidth: 550, 
+        margin: "0 0 0 8%", 
+        padding: "32px 50px", 
+        background: "#fff", 
+        borderRadius: 12, 
+        boxShadow: "0 8px 24px rgba(0,0,0,0.15)" 
+      }}>
+        <h2 style={{ textAlign: "center", marginBottom: 24 }}>Register an account</h2>
+        <Form layout="vertical" onFinish={onFinish} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <Form.Item
           name="email"
           label="Email"
@@ -44,13 +60,14 @@ function Register() {
             { required: true, message: "Please enter email!" },
             { type: "email", message: "Invalid email!" }
           ]}
+          style={{ width: "100%" }}
         >
           <Input />
         </Form.Item>
 
         <Form.Item
           name="password"
-          label="Mật khẩu"
+          label="Password"
           rules={[
             { required: true, message: "Please enter password!" },
             {
@@ -58,13 +75,14 @@ function Register() {
               message: "Password must be at least 9 characters and contain both letters and numbers!"
             }
           ]}
+          style={{ width: "100%" }}
         >
           <Input.Password />
         </Form.Item>
 
         <Form.Item
           name="confirm"
-          label="Xác nhận mật khẩu"
+          label="Confirm password"
           dependencies={['password']}
           rules={[
             { required: true, message: "Please confirm password!" },
@@ -77,6 +95,7 @@ function Register() {
               }
             })
           ]}
+          style={{ width: "100%" }}
         >
           <Input.Password />
         </Form.Item>
@@ -87,7 +106,7 @@ function Register() {
           </div>
         )}
 
-        <Form.Item>
+        <Form.Item style={{ width: "100%" }}>
           <Button type="primary" htmlType="submit" block loading={loading}>
             Register
           </Button>
@@ -95,6 +114,7 @@ function Register() {
       </Form>
       <div style={{ textAlign: "center" }}>
         Already have an account? <Link to="/login">Login</Link>
+      </div>
       </div>
     </div>
   );

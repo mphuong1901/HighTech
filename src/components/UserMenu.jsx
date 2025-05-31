@@ -16,7 +16,7 @@ function UserMenu() {
 
   const menu = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="logout">Đăng xuất</Menu.Item>
+      <Menu.Item key="logout">Log out</Menu.Item>
     </Menu>
   );
 

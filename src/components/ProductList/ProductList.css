@@ -11,6 +11,15 @@
   margin-bottom: 24px;
 }
 
+.product-list-header button {
+  background: #DB4444!important;
+  border-color: #DB4444!important;
+}
+.product-list-header button:hover {
+  background: #da6868!important;
+  border-color: #da6868!important;
+}
+
 .carousel-container {
   position: relative;
   padding: 0 40px;
@@ -120,6 +129,16 @@
   padding: 10px;
 }
 
+.add-to-cart-button {
+  background: #DB4444!important;
+  border-color: #DB4444!important
+}
+
+.add-to-cart-button:hover {
+  background: #da6868!important;
+  border-color: #da6868!important;
+}
+
 .product-image {
   position: absolute;
   top: 0;
@@ -194,7 +213,7 @@
   flex: 1 0 auto;
   display: flex;
   flex-direction: column;
-  height: 150px;
+
 }
 
 .product-name {
@@ -202,6 +221,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 20px !important;
+  font-weight: 500 !important;
 }
 
 .product-price {
@@ -220,6 +241,14 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.product-rating .ant-rate {
+  font-size: 12px !important;
+}
+
+.product-rating .ant-typography {
+  font-size: 12px !important;
 }
 
 .discount-badge {
